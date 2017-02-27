@@ -11,6 +11,7 @@ class Korytnacka:
         self.input = ''
         self.index = 0
         self.look = ''
+        self.token = ''
         
     def next(self):
         if self.index >= len(self.input):
@@ -20,7 +21,61 @@ class Korytnacka:
             self.index += 1
             
     def scan(self):
-        pass
+        while self.look == ' ':
+            self.next()
+        self.token = ''
+        self.position = self.index - 1
+        if self.look.isalpha():
+            self.token += self.look
+            self.next()
+            while self.look.isalpha():
+                self.token += self.look
+                self.next()
+        elif self.look.isdigit():
+            self.token += self.look
+            self.next()
+            while self.look.isdigit():
+                self.token += self.look
+                self.next()
+        elif self.look != '\0':
+            self.token = self.look
+            self.next()
+
+    def interpret(self):
+        while True:
+            if self.token in ('dopredu', 'dp') :
+                self.scan()
+                self.dopredu(int(self.token))
+                self.scan()
+            elif self.token in ('vlavo', 'vl'):
+                self.scan()
+                self.vlavo(int(self.token))
+                self.scan()
+            elif self.token in ('vpravo', 'vp'):
+                self.scan()
+                self.vpravo(int(self.token))
+                self.scan()
+            elif self.token == 'opakuj':
+                self.scan()
+                self.count = int(self.token)
+                self.scan()
+                if self.token == '[':
+                    self.scan()
+                    start = self.position
+                    while self.count > 0:
+                        self.index = start
+                        self.next()
+                        self.scan()
+                        self.interpret()
+                        self.count -= 1
+                if self.token == ']':
+                    self.scan()
+                
+            else:
+                break
+                
+            
+            
             
     def getInput(self, input):
         self.input = input
@@ -59,10 +114,13 @@ w = Canvas(master, width=600, height=400)
 w.pack()
 
 k = Korytnacka(w)
-k.getInput('dopredu 100 vlavo 90')
-while k.look != '\0':
-    print k.look
-    k.next()
+k.getInput('opakuj 4 [dp 100 vp 90]')
+k.next()
+k.scan()
+# while k.token != '':
+#     print k.token
+#     k.scan()
+k.interpret()
 
 
 
