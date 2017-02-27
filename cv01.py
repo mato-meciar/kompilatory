@@ -3,11 +3,27 @@ from math import *
 
 class Korytnacka:
     
-    def __init__(self, canvas):
+    def __init__(self, canvas, x=300, y=200, heading=0):
         self.canvas = canvas
-        self.heading = -90
-        self.x = 300
-        self.y = 400
+        self.heading = heading
+        self.x = x
+        self.y = y
+        self.input = ''
+        self.index = 0
+        self.look = ''
+        
+    def next(self):
+        if self.index >= len(self.input):
+            self.look = '\0'
+        else:
+            self.look = self.input[self.index]
+            self.index += 1
+            
+    def scan(self):
+        pass
+            
+    def getInput(self, input):
+        self.input = input
 
     def dopredu(self, kolko):
         newX = self.x + cos(radians(self.heading)) * kolko
@@ -17,9 +33,7 @@ class Korytnacka:
         self.y = newY
 
     def vpravo(self, uhol):
-        print self.heading
         self.heading += uhol
-        print self.heading
 
     def vlavo(self, uhol):
         self.heading -= uhol
@@ -45,8 +59,10 @@ w = Canvas(master, width=600, height=400)
 w.pack()
 
 k = Korytnacka(w)
-k.kresli("d*l*p*d", 120, 100, 0.5)
-
+k.getInput('dopredu 100 vlavo 90')
+while k.look != '\0':
+    print k.look
+    k.next()
 
 
 
